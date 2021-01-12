@@ -3,6 +3,10 @@ uuid = "8294860b-85a6-42f8-8c35-d911f667b5f6"
 authors = ["Simeon Schaub <simeondavidschaub99@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+FIFOStreams = "52a73f2b-c786-4122-ad8a-b7fbd35c9081"
+diffutils_jll = "11f5bf75-d780-529b-b59b-a3a04c974070"
+
 [compat]
 julia = "1"
 
