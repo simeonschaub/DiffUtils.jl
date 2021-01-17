@@ -1,0 +1,49 @@
+CodeInfo(
+1 ──       Core.NewvarNode(:(@_3))
+│          Core.NewvarNode(:(y))
+│          Core.NewvarNode(:(n))
+│          absx = Base.Math.abs(x)
+│    %5  = absx
+│    %6  = ($(Expr(:static_parameter, 1)))(Base.Math.pi)
+│    %7  = %6 / 4
+│    %8  = %5 < %7
+└───       goto #5 if not %8
+2 ── %10 = absx
+│    %11 = Base.Math.eps($(Expr(:static_parameter, 1)))
+│    %12 = Base.Math.sqrt(%11)
+│    %13 = %10 < %12
+└───       goto #4 if not %13
+3 ──       return x
+4 ── %16 = Base.Math.sin_kernel(x)
+└───       return %16
+5 ── %18 = Base.Math.isnan(x)
+└───       goto #7 if not %18
+6 ── %20 = ($(Expr(:static_parameter, 1)))(Base.Math.NaN)
+└───       return %20
+7 ── %22 = Base.Math.isinf(x)
+└───       goto #9 if not %22
+8 ──       Base.Math.sin_domain_error(x)
+9 ┄─ %25 = Base.Math.rem_pio2_kernel(x)
+│    %26 = Base.indexed_iterate(%25, 1)
+│          n = Core.getfield(%26, 1)
+│          @_3 = Core.getfield(%26, 2)
+│    %29 = Base.indexed_iterate(%25, 2, @_3)
+│          y = Core.getfield(%29, 1)
+│          n = n & 3
+│    %32 = n == 0
+└───       goto #11 if not %32
+10 ─ %34 = Base.Math.sin_kernel(y)
+└───       return %34
+11 ─ %36 = n == 1
+└───       goto #13 if not %36
+12 ─ %38 = Base.Math.cos_kernel(y)
+└───       return %38
+13 ─ %40 = n == 2
+└───       goto #15 if not %40
+14 ─ %42 = Base.Math.sin_kernel(y)
+│    %43 = -%42
+└───       return %43
+15 ─ %45 = Base.Math.cos_kernel(y)
+│    %46 = -%45
+└───       return %46
+)

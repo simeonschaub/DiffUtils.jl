@@ -5,7 +5,9 @@ using FIFOStreams
 
 @noinline function check_argtype(name::Symbol, val, T::Type)
     @nospecialize
-    val isa T || throw(ArgumentError("expected option `$name` to be of type `$T`, but got $val::$T instead."))
+    val isa T || throw(ArgumentError(
+        "expected option `$name` to be of type `$T`, but got $val::$(typeof(val)) instead.",
+    ))
     nothing
 end
 
@@ -53,7 +55,7 @@ const _INTEGER_ARGS = [
 ]
 const INTEGER_ARGS = Dict(
     Symbol(replace(strip(arg, '-'), '-' => '_')) => arg
-    for arg in _BOOLEAN_ARGS
+    for arg in _INTEGER_ARGS
 )
 
 function parse_options(options::Dict{Symbol,Any})
@@ -64,7 +66,7 @@ function parse_options(options::Dict{Symbol,Any})
             val && push!(args, BOOLEAN_ARGS[name])
         elseif haskey(INTEGER_ARGS, name)
             check_argtype(name, val, Int)
-            argname = BOOLEAN_ARGS[name]
+            argname = INTEGER_ARGS[name]
             if occursin(r"^\-[a-z]$", argname)
                 push!(args, "$argname$val")
             elseif occursin(r"^\-[A-Z]$", argname)
@@ -102,7 +104,7 @@ function diff(f::Function; stdout=stdout, @nospecialize(options...))
         try
             args = parse_options(merge(DEFAULT_OPTIONS, Dict{Symbol, Any}(pairs(options))))
             cmd = Cmd(String[diff; path(s, 1); path(s, 2); args])
-            attach(s, pipeline(ignorestatus(cmd); stdout))
+            attach(s, pipeline(ignorestatus(cmd); stdout=stdout))
             s1, s2 = s
             ret = f(s1, s2)
         finally
@@ -113,9 +115,11 @@ function diff(f::Function; stdout=stdout, @nospecialize(options...))
 end
 
 function diff(x1, x2; stdout=stdout, @nospecialize(options...))
-    diff(; stdout, options...) do s1, s2
+    diff(; stdout=stdout, options...) do s1, s2
         print(s1, x1)
+        println(s1)
         print(s2, x2)
+        println(s2)
     end
     nothing
 end
