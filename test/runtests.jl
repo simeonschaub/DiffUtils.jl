@@ -15,11 +15,7 @@ using Test
             close(f2)
         end
     end
-    if Sys.iswindows()
-        @test_broken out == diff_ab
-    else
-        @test out == diff_ab
-    end
+    @test out == diff_ab
 
     a = read("a", String) |> strip
     b = read("b", String) |> strip
