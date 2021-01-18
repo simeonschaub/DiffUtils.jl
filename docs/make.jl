@@ -1,6 +1,8 @@
 using DiffUtils
 using Documenter
 
+DocMeta.setdocmeta!(DiffUtils, :DocTestSetup, :(using DiffUtils); recursive=true)
+
 makedocs(;
     modules=[DiffUtils],
     authors="Simeon Schaub <simeondavidschaub99@gmail.com> and contributors",

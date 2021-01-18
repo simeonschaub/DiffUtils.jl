@@ -54,3 +54,16 @@ end
         end
     end
 end
+
+using Documenter
+DocMeta.setdocmeta!(
+    DiffUtils,
+    :DocTestSetup,
+    :(using DiffUtils);
+    recursive=true,
+)
+if !Sys.iswindows()
+    @testset "doctests" begin
+        doctest(DiffUtils)
+    end
+end

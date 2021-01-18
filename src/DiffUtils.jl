@@ -97,6 +97,39 @@ const DEFAULT_OPTIONS = Dict(
     :labels => ("stream 1", "stream 2"),
 )
 
+"""
+    DiffUtils.diff(f::Function; stdout=stdout, side_by_side=true, color=true, options...)
+
+Takes a function `f` which gets passed two output streams and may write to them. The resulting
+contents are then passed to `diff`.
+
+Optionally, `stdout` specifies the stream which the output of `diff` gets written to.
+
+```jldoctest
+julia> DiffUtils.diff() do s1, s2
+           println(s1, "foo")
+           println(s2, "bar")
+       end
+foo							      |	bar
+```
+
+## Supported Options
+
+See the [`diff` man page](https://www.man7.org/linux/man-pages/man1/diff.1.html) for further
+reference.
+
+### Boolean Arguments
+
+$(join(string.("`", keys(BOOLEAN_ARGS), "`"), ", "))
+
+### Integer Arguments
+
+$(join(string.("`", keys(INTEGER_ARGS), "`"), ", "))
+
+### Other
+
+$(join(string.("`", [:color, :labels], "`"), ", "))
+"""
 function diff(f::Function; stdout=stdout, @nospecialize(options...))
     _diff() do diff
         s = FIFOStreamCollection(2)
@@ -114,6 +147,20 @@ function diff(f::Function; stdout=stdout, @nospecialize(options...))
     end
 end
 
+"""
+    DiffUtils.diff(x1, x2; stdout=stdout, side_by_side=true, color=true, options...)
+
+Prints the diff of the string representations of `x1` and `x2`.
+
+Optionally, `stdout` specifies the stream which the output of `diff` gets written to.
+
+```jldoctest
+julia> DiffUtils.diff("foo", "bar")
+foo							      |	bar
+```
+
+For further details on the supported options, see [`diff(::Function)`](@ref).
+"""
 function diff(x1, x2; stdout=stdout, @nospecialize(options...))
     diff(; stdout=stdout, options...) do s1, s2
         print(s1, x1)
