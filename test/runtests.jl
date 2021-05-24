@@ -1,6 +1,13 @@
 using DiffUtils
 using Test
 
+function sprint(f, x...)
+    buf = Base.BufferStream()
+    f(buf, x...)
+    close(buf)
+    return String(take!(buf.buffer))
+end
+
 @testset "DiffUtils.diff" begin
     # different line endings not only change the line endings themselves in the output,
     # but can also affect the number of tabs
